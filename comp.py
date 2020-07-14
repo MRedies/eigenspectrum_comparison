@@ -66,16 +66,16 @@ psi2b = np.load("/home/matthias/calculation/debug/mpi=2/psi_kqpt_nk=1_iq=1_bando
 psi2 = np.hstack([psi2a, psi2b])
 
 cprod1 = np.load("/home/matthias/calculation/debug/mpi=1/cprod_is_nk=1_iq=1_bandoi=1.npy")
-iob1   = np.load("/home/matthias/calculation/debug/mpi=1/iob_is_nk=1_iq=1_bandoi=1.npy")
-iband1 = np.load("/home/matthias/calculation/debug/mpi=1/iband_is_nk=1_iq=1_bandoi=1.npy")
+iob1   = np.load("/home/matthias/calculation/debug/mpi=1/iob_is_nk=1_iq=1_bandoi=1.npy") - 1
+iband1 = np.load("/home/matthias/calculation/debug/mpi=1/iband_is_nk=1_iq=1_bandoi=1.npy") - 1
 
 cprod2a = np.load("/home/matthias/calculation/debug/mpi=2/cprod_is_nk=1_iq=1_bandoi=1.npy")
-iob2a  = np.load("/home/matthias/calculation/debug/mpi=2/iob_is_nk=1_iq=1_bandoi=1.npy")
-iband2a = np.load("/home/matthias/calculation/debug/mpi=2/iband_is_nk=1_iq=1_bandoi=1.npy")
+iob2a  = np.load("/home/matthias/calculation/debug/mpi=2/iob_is_nk=1_iq=1_bandoi=1.npy") - 1
+iband2a = np.load("/home/matthias/calculation/debug/mpi=2/iband_is_nk=1_iq=1_bandoi=1.npy") - 1
 
 cprod2b = np.load("/home/matthias/calculation/debug/mpi=2/cprod_is_nk=1_iq=1_bandoi=5.npy")
-iob2b  = np.load("/home/matthias/calculation/debug/mpi=2/iob_is_nk=1_iq=1_bandoi=5.npy")
-iband2b = np.load("/home/matthias/calculation/debug/mpi=2/iband_is_nk=1_iq=1_bandoi=5.npy")
+iob2b  = np.load("/home/matthias/calculation/debug/mpi=2/iob_is_nk=1_iq=1_bandoi=5.npy") - 1
+iband2b = np.load("/home/matthias/calculation/debug/mpi=2/iband_is_nk=1_iq=1_bandoi=5.npy") - 1
 
 cprod2 = np.hstack([cprod2a, cprod2b])
 iob2   = np.hstack([iob2a, iob2b])
@@ -84,4 +84,6 @@ iband2 = np.hstack([iband2a, iband2b])
 non_deg = list_non_deg(eigval1)
 
 for i in range(312):
-   print(iob1[i], iband1[i], "###", iob2[i], iband2[i])
+   if((iob1[i] in non_deg) and (iband1[i] in non_deg)):
+      idx = np.argwhere(np.logical_and(iband2 == iband1[i], iob2 == iob1[i]))[0,0]
+      print(iob1[i], iband1[i], np.linalg.norm(cprod1[:,i] - cprod2[:,idx]))
